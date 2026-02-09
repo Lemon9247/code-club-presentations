@@ -1,0 +1,73 @@
+name: Deploy Slidev Presentations
+
+on:
+  push:
+    branches: [main] # or master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Build All Presentations
+        run: |
+          # Create a root directory for the final website
+          mkdir -p public
+          
+          # Loop through each folder in presentations/
+          for dir in presentations/*/ ; do
+            # Get the folder name (e.g., 'present1')
+            folder=$(basename "$dir")
+            echo "Building $folder..."
+            
+            # Install dependencies inside the subfolder if they exist, 
+            # otherwise use the root dependencies
+            if [ -f "$dir/package.json" ]; then
+              cd "$dir" && npm install && cd ../..
+            fi
+
+            # Build command:
+            # --base: sets the URL path (e.g., /my-repo/present1/)
+            # --out: sends the build to our central public folder
+            npx playwright install-deps # Optional: only if you use PDF/Export features
+            npx slidev build "$dir"slides.md \
+              --base "${{ steps.pages.outputs.base_path }}/$folder/" \
+              --out "../../public/$folder"
+          done
+
+      - name: Create Landing Page (Optional)
+        run: |
+          # Creates a simple index.html so the root URL doesn't 404
+          echo "<html><body><h1>My Presentations</h1><ul>" > public/index.html
+          for dir in presentations/*/ ; do
+            folder=$(basename "$dir")
+            echo "<li><a href='./$folder/'>$folder</a></li>" >> public/index.html
+          done
+          echo "</ul></body></html>" >> public/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
