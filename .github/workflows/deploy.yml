@@ -32,21 +32,33 @@ jobs:
           
           # Iterate through each folder in presentations/
           for dir in presentations/*/ ; do
+            # Get just the folder name
             folder=$(basename "$dir")
-            echo "Building presentation: $folder"
+            echo "------------------------------------------"
+            echo "Processing presentation: $folder"
+            echo "------------------------------------------"
             
-            # npx will automatically download slidev if it's not found
-            # We use --yes to skip the confirmation prompt in CI
-            npx --yes playwright install-deps
-            npx --yes slidev build "$dir"slides.md \
+            # Move into the presentation directory
+            cd "presentations/$folder"
+            
+            # Install dependencies using the lockfile
+            # npm ci is faster and more reliable for CI/CD
+            npm ci
+            
+            # Run the build
+            # We use npx to ensure we use the local version installed via npm ci
+            npx slidev build slides.md \
               --base "${{ steps.pages.outputs.base_path }}/$folder/" \
               --out "../../public/$folder"
+            
+            # Move back to root for the next iteration
+            cd ../..
           done
 
       - name: Create Landing Page
         run: |
-          echo "<html><body style='font-family: sans-serif; padding: 2rem;'>" > public/index.html
-          echo "<h1>My Presentations</h1><ul>" >> public/index.html
+          echo "<html><body style='font-family:sans-serif;padding:40px;line-height:1.6;'>" > public/index.html
+          echo "<h1>Presentation Index</h1><ul>" >> public/index.html
           for dir in presentations/*/ ; do
             folder=$(basename "$dir")
             echo "<li><a href='./$folder/'>$folder</a></li>" >> public/index.html
