@@ -2,7 +2,7 @@ name: Deploy Slidev Presentations
 
 on:
   push:
-    branches: [main] # or master
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Setup Pages
         id: pages
@@ -29,34 +28,25 @@ jobs:
 
       - name: Build All Presentations
         run: |
-          # Create a root directory for the final website
           mkdir -p public
           
-          # Loop through each folder in presentations/
+          # Iterate through each folder in presentations/
           for dir in presentations/*/ ; do
-            # Get the folder name (e.g., 'present1')
             folder=$(basename "$dir")
-            echo "Building $folder..."
+            echo "Building presentation: $folder"
             
-            # Install dependencies inside the subfolder if they exist, 
-            # otherwise use the root dependencies
-            if [ -f "$dir/package.json" ]; then
-              cd "$dir" && npm install && cd ../..
-            fi
-
-            # Build command:
-            # --base: sets the URL path (e.g., /my-repo/present1/)
-            # --out: sends the build to our central public folder
-            npx playwright install-deps # Optional: only if you use PDF/Export features
-            npx slidev build "$dir"slides.md \
+            # npx will automatically download slidev if it's not found
+            # We use --yes to skip the confirmation prompt in CI
+            npx --yes playwright install-deps
+            npx --yes slidev build "$dir"slides.md \
               --base "${{ steps.pages.outputs.base_path }}/$folder/" \
               --out "../../public/$folder"
           done
 
-      - name: Create Landing Page (Optional)
+      - name: Create Landing Page
         run: |
-          # Creates a simple index.html so the root URL doesn't 404
-          echo "<html><body><h1>My Presentations</h1><ul>" > public/index.html
+          echo "<html><body style='font-family: sans-serif; padding: 2rem;'>" > public/index.html
+          echo "<h1>My Presentations</h1><ul>" >> public/index.html
           for dir in presentations/*/ ; do
             folder=$(basename "$dir")
             echo "<li><a href='./$folder/'>$folder</a></li>" >> public/index.html
