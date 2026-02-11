@@ -45,8 +45,8 @@ layout: center
 <v-clicks depth="2">
 
 - Simple answer: "an LLM which can do things"
-- Better answer: An LLM which has been trained to generate certain commands that can be picked up by a parser, which then get passed along to tools be executed.
-- Tools are just programs:
+- Better answer: An LLM in some "harness". The LLM generates commands, and the "harness" executes them
+- These tools are just programs:
     - Bash Commands
     - Text editors
     - Web Search (Google etc.)
@@ -219,7 +219,7 @@ layout: two-cols-header
 <span style="color: #955438">
 <v-click>
 
-### Your greatest skill is to imagine!
+### Your greatest skill is to *think*!
 
 </v-click>
 </span>
@@ -234,14 +234,51 @@ Douglas Engelbart - Founder of Human-Computer Interaction
 layout: two-cols-header
 ---
 
+# Garbage In, Garbage Out
+
+::left::
+
+<v-clicks>
+
+- The AI is an incredibly powerful tool, designed to help you complete a task
+- This is incredibly useful!
+- If your task is... y'know. Thought out.
+
+
+</v-clicks>
+
+<v-click>
+
+## *Question everything you're doing - THINK!*
+
+</v-click>
+
+<v-clicks>
+
+- Is my prompt actually detailed enough for the AI to understand what I need?
+- Do *I* know what I need?
+- Is the AI's approach *the right one?*
+- Have I just spent 5 million tokens on a to-do list app nobody wants?
+
+</v-clicks>
+
+::right::
+
+![Shen](./images/shen.png){.max-h-80 .object-contain .mx-auto}
+
+
+---
+layout: two-cols-header
+---
+
 # In Conclusion
 
 ::left::
 
 - ### As in the mid 20th century, the world faces immensely complex problems
-- ### We are all too specialised to coordinate
-- ### A new computer is here to help
-- ### Embrace it! :)
+- ### Overspecialisation of technology is getting worse and worse
+- ### But a new computer is here to help, *if you use your brain*
+- ### Embrace it!
 
 ::right::
 
@@ -249,10 +286,48 @@ layout: two-cols-header
 
 
 ---
-layout: center
----
 
 # Thank you for listening!
+
+## Where to try:
+
+<div class="grid grid-cols-2 gap-12 mt-8">
+
+<div>
+
+### Vendor-locked
+- ***Antigravity IDE - Google (FREE!)***
+- Claude Code - Anthropic (Paid)
+- Codex - OpenAI (Paid)
+
+</div>
+
+<div>
+
+### Multi-Model
+- Amp (Paid, but free with ads)
+- Cursor (Paid)
+
+</div>
+
+</div>
+
+<div class="mt-16 text-center">
+
+### FOSS
+
+<div class="mt-4 space-y-2">
+
+Opencode — spiritually emacs
+
+Pi (what I use) — spiritually vim
+
+(N.B. Requires self-hosted or paid API access to an LLM)
+
+</div>
+
+</div>
+
 
 ---
 
